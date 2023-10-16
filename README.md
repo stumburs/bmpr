@@ -8,6 +8,7 @@ This is a simple header only BMP image library for C++, allowing you to create, 
     -   [Table of Contents](#table-of-contents)
     -   [Introduction](#introduction)
     -   [Usage](#usage)
+    -   [License](#license)
 
 ## Introduction
 
@@ -40,3 +41,7 @@ int main()
     img.Save("output.bmp");
 }
 ```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
