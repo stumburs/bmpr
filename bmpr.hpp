@@ -304,9 +304,7 @@ namespace bmpr
 
     void Image::Clear(const Color &color)
     {
-        for (std::size_t i = 0; i < m_width; i++)
-            for (std::size_t j = 0; j < m_height; j++)
-                Set(i, j, color);
+        std::fill(m_data.begin(), m_data.end(), color);
     }
 
     std::int32_t Image::Width() const noexcept { return m_width; }
