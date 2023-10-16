@@ -2,6 +2,7 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <cmath>
 
 namespace bmpr
 {
@@ -26,12 +27,24 @@ namespace bmpr
     };
 #pragma pack(pop)
 
+    struct Vector2
+    {
+        std::int32_t x, y;
+        Vector2() : x(0), y(0) {}
+        Vector2(int32_t xy) : x(xy), y(xy) {}
+        Vector2(int32_t x, int32_t y) : x(x), y(y) {}
+    };
+
     struct Color
     {
         uint8_t r, g, b;
         Color() : r(0), g(0), b(0) {}
         Color(uint8_t rgb) : r(rgb), g(rgb), b(rgb) {}
         Color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
+        static Color Random()
+        {
+            return {static_cast<uint8_t>(rand() % 255), static_cast<uint8_t>(rand() % 255), static_cast<uint8_t>(rand() % 255)};
+        }
     };
 
     // Color defines
@@ -69,6 +82,9 @@ namespace bmpr
         void DrawLine(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int32_t y2, Color color);
         // Draws a line from x1;y1 to x2;y2 with a certain thickness
         void DrawLine(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int32_t y2, int thickness, Color color);
+        // Draws a quadratic bezier curve
+        void DrawQuadraticBezierCurve(const Vector2 &start, const Vector2 &control, const Vector2 &end, float step_size, const Color &color);
+        void DrawQuadraticBezierCurve(const Vector2 &start, const Vector2 &control, const Vector2 &end, int num_points, const Color &color);
         // Draws a filled circle at x;y as its center
         void DrawCircle(std::int32_t x, std::int32_t y, std::int32_t r, Color color);
         // Draws the circumference of a circle at x;y as its center
@@ -190,6 +206,35 @@ namespace bmpr
                 error += delta_x;
                 y += sign_y;
             }
+        }
+    }
+
+    void Image::DrawQuadraticBezierCurve(const Vector2 &start, const Vector2 &control, const Vector2 &end, int num_points, const Color &color)
+    {
+        for (int i = 0; i <= num_points; ++i)
+        {
+            float t = static_cast<float>(i) / static_cast<float>(num_points);
+
+            float x = pow(1 - t, 2) * start.x + 2 * t * (1 - t) * control.x + pow(t, 2) * end.x;
+            float y = pow(1 - t, 2) * start.y + 2 * t * (1 - t) * control.y + pow(t, 2) * end.y;
+
+            // Set the pixel color for the calculated point
+            SetSafe(static_cast<int>(x), static_cast<int>(y), color);
+        }
+    }
+    void Image::DrawQuadraticBezierCurve(const Vector2 &start, const Vector2 &control, const Vector2 &end, float step_size, const Color &color)
+    {
+        float t = 0.0;
+
+        while (t <= 1.0)
+        {
+            float x = pow(1 - t, 2) * start.x + 2 * t * (1 - t) * control.x + pow(t, 2) * end.x;
+            float y = pow(1 - t, 2) * start.y + 2 * t * (1 - t) * control.y + pow(t, 2) * end.y;
+
+            // Set the pixel color for the calculated point
+            SetSafe(static_cast<int>(x), static_cast<int>(y), color);
+
+            t += step_size;
         }
     }
 
