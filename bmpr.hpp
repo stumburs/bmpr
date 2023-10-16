@@ -34,6 +34,26 @@ namespace bmpr
         Color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
     };
 
+    // Color defines
+    const Color BLACK = {0};
+    const Color WHITE = {255};
+    const Color RED = {255, 0, 0};
+    const Color GREEN = {0, 255, 0};
+    const Color BLUE = {0, 0, 255};
+    const Color YELLOW = {255, 255, 0};
+    const Color CYAN = {0, 255, 255};
+    const Color MAGENTA = {255, 0, 255};
+    const Color ORANGE = {255, 165, 0};
+    const Color PINK = {255, 192, 203};
+    const Color PURPLE = {128, 0, 128};
+    const Color BROWN = {139, 69, 19};
+    const Color GRAY = {128, 128, 128};
+    const Color LIGHT_GRAY = {192, 192, 192};
+    const Color DARK_GRAY = {64, 64, 64};
+    const Color PASTEL_YELLOW = {255, 255, 153};
+    const Color PASTEL_GREEN = {153, 255, 153};
+    const Color PASTEL_BLUE = {153, 204, 255};
+
     class Image
     {
     public:
@@ -49,12 +69,16 @@ namespace bmpr
         void DrawLine(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int32_t y2, Color color);
         // Draws a line from x1;y1 to x2;y2 with a certain thickness
         void DrawLine(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int32_t y2, int thickness, Color color);
-        // Draws a circle at x;y as its center
+        // Draws a filled circle at x;y as its center
         void DrawCircle(std::int32_t x, std::int32_t y, std::int32_t r, Color color);
         // Draws the circumference of a circle at x;y as its center
         void DrawCircleLine(std::int32_t x, std::int32_t y, std::int32_t r, Color color);
-        // Draws the rectangle that contains the circle, with the circle not being drawn
+        // Draws a filled rectangle that contains the circle, with the circle not being drawn
         void DrawCircleInverted(std::int32_t x, std::int32_t y, std::int32_t r, Color color);
+        // Draws a filled rectangle with the top-left most point at x;y
+        void DrawRectangle(std::int32_t x, std::int32_t y, std::int32_t w, std::int32_t h, Color color);
+        // Draws the perimeter of a rectangle witht the top-left most point at x;y
+        void DrawRectangleLine(std::int32_t x, std::int32_t y, std::int32_t w, std::int32_t h, Color color);
         // Returns image width in pixels
         std::int32_t Width() const noexcept;
         // Returns image height in pixels
@@ -172,8 +196,8 @@ namespace bmpr
     // Probably not the best solution, but it's only addition
     void Image::DrawCircle(std::int32_t x, std::int32_t y, std::int32_t r, Color color)
     {
-        for (int y1 = -r; y1 <= r; y1++)
-            for (int x1 = -r; x1 <= r; x1++)
+        for (std::int32_t y1 = -r; y1 <= r; y1++)
+            for (std::int32_t x1 = -r; x1 <= r; x1++)
                 if (x1 * x1 + y1 * y1 < r * r + r)
                     SetSafe(x + x1, y + y1, color);
     }
@@ -205,10 +229,32 @@ namespace bmpr
 
     void Image::DrawCircleInverted(std::int32_t x, std::int32_t y, std::int32_t r, Color color)
     {
-        for (int y1 = -r; y1 <= r; y1++)
-            for (int x1 = -r; x1 <= r; x1++)
+        for (std::int32_t y1 = -r; y1 <= r; y1++)
+            for (std::int32_t x1 = -r; x1 <= r; x1++)
                 if (x1 * x1 + y1 * y1 >= r * r + r && x1 / x1 + y1 / y1 <= r * r - r)
                     SetSafe(x + x1, y + y1, color);
+    }
+
+    void Image::DrawRectangle(std::int32_t x, std::int32_t y, std::int32_t w, std::int32_t h, Color color)
+    {
+        for (std::int32_t width = 0; width < w; width++)
+            for (std::int32_t height = 0; height < h; height++)
+                SetSafe(x + width, y + height, color);
+    }
+
+    void Image::DrawRectangleLine(std::int32_t x, std::int32_t y, std::int32_t w, std::int32_t h, Color color)
+    {
+        for (std::int32_t width = 0; width < w; width++)
+        {
+            SetSafe(x + width, y, color);
+            SetSafe(x + width, y + h, color);
+        }
+        for (std::int32_t height = 0; height < h; height++)
+        {
+            SetSafe(x, y + height, color);
+            SetSafe(x + w, y + height, color);
+        }
+        SetSafe(x + w, y + h, color);
     }
 
     void Image::Clear(const Color &color)
