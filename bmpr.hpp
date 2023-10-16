@@ -110,6 +110,15 @@ namespace bmpr
         // Inverts the colors of the image
         void Invert();
 
+        //
+        // DEBUG FUNCTIONS
+        //
+        // These will get removed or be implemented in the future.
+        // Rotates the image ???-wise by an angle in degrees
+        void DEBUGRotate(float angle);
+        // Bilinear color interpolation
+        Color DEBUGInterpolateColor(float x, float y);
+
     private:
         std::vector<Color> m_data;
         std::int32_t m_width = 0, m_height = 0;
@@ -402,5 +411,73 @@ namespace bmpr
             pixel.g = 255 - pixel.g;
             pixel.b = 255 - pixel.b;
         }
+    }
+
+    void Image::DEBUGRotate(float angle)
+    {
+        const float center_x = static_cast<float>(m_width) / 2.0f;
+        const float center_y = static_cast<float>(m_height) / 2.0f;
+
+        for (int y = 0; y < m_height; ++y)
+        {
+            for (int x = 0; x < m_width; ++x)
+            {
+                // Translate the coordinates so that the center of the image is the origin
+                float translated_x = static_cast<float>(x) - center_x;
+                float translated_y = static_cast<float>(y) - center_y;
+
+                // Rotate the coordinates around the origin
+                float rotated_x = translated_x * cos(angle) - translated_y * sin(angle);
+                float rotated_y = translated_x * sin(angle) + translated_y * cos(angle);
+
+                // Translate the coordinates back to the original coordinate system
+                rotated_x += center_x;
+                rotated_y += center_y;
+
+                // Interpolate the color using the rotated coordinates (you may implement this)
+                Color interpolatedColor = DEBUGInterpolateColor(rotated_x, rotated_y);
+
+                // Set the color for the current pixel
+                SetSafe(x, y, interpolatedColor);
+            }
+        }
+    }
+
+    Color Image::DEBUGInterpolateColor(float x, float y)
+    {
+        // Calculate the integer coordinates of the surrounding pixels
+        int x1 = static_cast<int>(floor(x));
+        int x2 = x1 + 1;
+        int y1 = static_cast<int>(floor(y));
+        int y2 = y1 + 1;
+
+        if (x1 < 0 || x2 >= m_width || y1 < 0 || y2 >= m_height)
+        {
+            // Handle out-of-bounds condition (e.g., return a default color)
+            return Color(0, 0, 0);
+        }
+
+        // Get the colors of the surrounding pixels
+        // x * row_len + y
+        const Color &topLeft = m_data.at(x1 * m_width + y1);     // img.GetPixel(x1, y1);
+        const Color &topRight = m_data.at(x2 * m_width + y1);    // img.GetPixel(x2, y1);
+        const Color &bottomLeft = m_data.at(x1 * m_width + y2);  // img.GetPixel(x1, y2);
+        const Color &bottomRight = m_data.at(x2 * m_width + y2); // img.GetPixel(x2, y2);
+
+        // Calculate the weights for the interpolation
+        float weightTopLeft = (x2 - x) * (y2 - y);
+        float weightTopRight = (x - x1) * (y2 - y);
+        float weightBottomLeft = (x2 - x) * (y - y1);
+        float weightBottomRight = (x - x1) * (y - y1);
+
+        // Interpolate the color components
+        uint8_t r = static_cast<uint8_t>(topLeft.r * weightTopLeft + topRight.r * weightTopRight +
+                                         bottomLeft.r * weightBottomLeft + bottomRight.r * weightBottomRight);
+        uint8_t g = static_cast<uint8_t>(topLeft.g * weightTopLeft + topRight.g * weightTopRight +
+                                         bottomLeft.g * weightBottomLeft + bottomRight.g * weightBottomRight);
+        uint8_t b = static_cast<uint8_t>(topLeft.b * weightTopLeft + topRight.b * weightTopRight +
+                                         bottomLeft.b * weightBottomLeft + bottomRight.b * weightBottomRight);
+
+        return Color(r, g, b);
     }
 }
