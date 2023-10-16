@@ -49,6 +49,12 @@ namespace bmpr
         void DrawLine(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int32_t y2, Color color);
         // Draws a line from x1;y1 to x2;y2 with a certain thickness
         void DrawLine(std::int32_t x1, std::int32_t y1, std::int32_t x2, std::int32_t y2, int thickness, Color color);
+        // Draws a circle at x;y as its center
+        void DrawCircle(std::int32_t x, std::int32_t y, std::int32_t r, Color color);
+        // Draws the circumference of a circle at x;y as its center
+        void DrawCircleLine(std::int32_t x, std::int32_t y, std::int32_t r, Color color);
+        // Draws the rectangle that contains the circle, with the circle not being drawn
+        void DrawCircleInverted(std::int32_t x, std::int32_t y, std::int32_t r, Color color);
         // Returns image width in pixels
         std::int32_t Width() const noexcept;
         // Returns image height in pixels
@@ -143,7 +149,7 @@ namespace bmpr
             {
                 for (int j = 0; j < thickness; ++j)
                 {
-                    SetSafe(x + i, y + j, color);
+                    SetSafe(x + i - thickness / 2, y + j - thickness / 2, color);
                 }
             }
 
@@ -161,6 +167,48 @@ namespace bmpr
                 y += sign_y;
             }
         }
+    }
+
+    // Probably not the best solution, but it's only addition
+    void Image::DrawCircle(std::int32_t x, std::int32_t y, std::int32_t r, Color color)
+    {
+        for (int y1 = -r; y1 <= r; y1++)
+            for (int x1 = -r; x1 <= r; x1++)
+                if (x1 * x1 + y1 * y1 < r * r + r)
+                    SetSafe(x + x1, y + y1, color);
+    }
+
+    void Image::DrawCircleLine(std::int32_t x, std::int32_t y, std::int32_t r, Color color)
+    {
+        int center_x = 0;
+        int center_y = r;
+        int d = 3 - 2 * r;
+
+        while (center_x <= center_y)
+        {
+            // Octants
+            SetSafe(x + center_x, y + center_y, color);
+            SetSafe(x - center_x, y + center_y, color);
+            SetSafe(x + center_x, y - center_y, color);
+            SetSafe(x - center_x, y - center_y, color);
+            SetSafe(x + center_y, y + center_x, color);
+            SetSafe(x - center_y, y + center_x, color);
+            SetSafe(x + center_y, y - center_x, color);
+            SetSafe(x - center_y, y - center_x, color);
+
+            if (d < 0)
+                d += 4 * center_x++ + 6;
+            else
+                d += 4 * (center_x++ - center_y--) + 10;
+        }
+    }
+
+    void Image::DrawCircleInverted(std::int32_t x, std::int32_t y, std::int32_t r, Color color)
+    {
+        for (int y1 = -r; y1 <= r; y1++)
+            for (int x1 = -r; x1 <= r; x1++)
+                if (x1 * x1 + y1 * y1 >= r * r + r && x1 / x1 + y1 / y1 <= r * r - r)
+                    SetSafe(x + x1, y + y1, color);
     }
 
     void Image::Clear(const Color &color)
