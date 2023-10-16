@@ -107,6 +107,8 @@ namespace bmpr
         void FlipHorizontally();
         // Flips the image vertically
         void FlipVertically();
+        // Inverts the colors of the image
+        void Invert();
 
     private:
         std::vector<Color> m_data;
@@ -387,6 +389,18 @@ namespace bmpr
                 int index_1D_bottom = (m_height - 1 - y) * m_width + x;
                 std::swap(m_data[index_1D_top], m_data[index_1D_bottom]);
             }
+        }
+    }
+
+    void Image::Invert()
+    {
+        for (std::size_t i = 0; i < m_width * m_height; i++)
+        {
+            Color &pixel = m_data[i];
+            // Invert each color component
+            pixel.r = 255 - pixel.r;
+            pixel.g = 255 - pixel.g;
+            pixel.b = 255 - pixel.b;
         }
     }
 }
