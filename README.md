@@ -2,21 +2,13 @@
 
 This is a simple header only BMP image library for C++, allowing you to create, and save BMP images programmatically with various functions.
 
-## Table of Contents
-
--   [bmpr](#bmpr)
-    -   [Table of Contents](#table-of-contents)
-    -   [Introduction](#introduction)
-    -   [Usage](#usage)
-    -   [License](#license)
-
-## Introduction
+## About
 
 This library provides a straightforward way to create BMP images and perform operations such as setting pixels, drawing lines, circles, rectangles, and more.
 
 ## Usage
 
-To use this library, simple include the header. Create an `Image` object, set pixels, draw shapes, and save the image to a file.
+To use this library, simply include the header. Create an `Image` object, set pixels, draw shapes, and save the image to a file.
 
 Example usage:
 
