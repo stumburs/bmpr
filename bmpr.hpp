@@ -45,27 +45,47 @@ namespace bmpr
         {
             return {static_cast<uint8_t>(rand() % 255), static_cast<uint8_t>(rand() % 255), static_cast<uint8_t>(rand() % 255)};
         }
+
+        // Color defines
+        static const Color BLACK;
+        static const Color WHITE;
+        static const Color RED;
+        static const Color GREEN;
+        static const Color BLUE;
+        static const Color YELLOW;
+        static const Color CYAN;
+        static const Color MAGENTA;
+        static const Color ORANGE;
+        static const Color PINK;
+        static const Color PURPLE;
+        static const Color BROWN;
+        static const Color GRAY;
+        static const Color LIGHT_GRAY;
+        static const Color DARK_GRAY;
+        static const Color PASTEL_YELLOW;
+        static const Color PASTEL_GREEN;
+        static const Color PASTEL_BLUE;
     };
 
     // Color defines
-    const Color BLACK = {0};
-    const Color WHITE = {255};
-    const Color RED = {255, 0, 0};
-    const Color GREEN = {0, 255, 0};
-    const Color BLUE = {0, 0, 255};
-    const Color YELLOW = {255, 255, 0};
-    const Color CYAN = {0, 255, 255};
-    const Color MAGENTA = {255, 0, 255};
-    const Color ORANGE = {255, 165, 0};
-    const Color PINK = {255, 192, 203};
-    const Color PURPLE = {128, 0, 128};
-    const Color BROWN = {139, 69, 19};
-    const Color GRAY = {128, 128, 128};
-    const Color LIGHT_GRAY = {192, 192, 192};
-    const Color DARK_GRAY = {64, 64, 64};
-    const Color PASTEL_YELLOW = {255, 255, 153};
-    const Color PASTEL_GREEN = {153, 255, 153};
-    const Color PASTEL_BLUE = {153, 204, 255};
+    const Color Color::BLACK = {0};
+    const Color Color::WHITE = {255};
+    const Color Color::RED = {255, 0, 0};
+    const Color Color::GREEN = {0, 255, 0};
+    const Color Color::BLUE = {0, 0, 255};
+    const Color Color::YELLOW = {255, 255, 0};
+    const Color Color::CYAN = {0, 255, 255};
+    const Color Color::MAGENTA = {255, 0, 255};
+    const Color Color::ORANGE = {255, 165, 0};
+    const Color Color::PINK = {255, 192, 203};
+    const Color Color::PURPLE = {128, 0, 128};
+    const Color Color::BROWN = {139, 69, 19};
+    const Color Color::GRAY = {128, 128, 128};
+    const Color Color::LIGHT_GRAY = {192, 192, 192};
+    const Color Color::DARK_GRAY = {64, 64, 64};
+    const Color Color::PASTEL_YELLOW = {255, 255, 153};
+    const Color Color::PASTEL_GREEN = {153, 255, 153};
+    const Color Color::PASTEL_BLUE = {153, 204, 255};
 
     class Image
     {
