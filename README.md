@@ -24,7 +24,7 @@ int main()
     img.Clear({128, 128, 128});
 
     // Set a pixel at (100, 200) to red
-    img.Set(100, 200, bmpr::RED);
+    img.Set(100, 200, bmpr::Color::RED);
 
     // Draw a line from (100, 200) to (500, 400) with a thickness of 2 and a random color
     img.DrawLine(100, 200, 500, 400, 2, bmpr::Color::Random());
